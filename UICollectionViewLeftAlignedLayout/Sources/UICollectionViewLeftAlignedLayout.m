@@ -70,19 +70,21 @@
     NSIndexPath* previousIndexPath = [NSIndexPath indexPathForItem:indexPath.item-1 inSection:indexPath.section];
     CGRect previousFrame = [self layoutAttributesForItemAtIndexPath:previousIndexPath].frame;
     CGFloat previousFrameRightPoint = previousFrame.origin.x + previousFrame.size.width;
-    CGRect currentFrame = currentItemAttributes.frame;
-    CGRect strecthedCurrentFrame = CGRectMake(sectionInset.left,
-                                              currentFrame.origin.y,
-                                              layoutWidth,
-                                              currentFrame.size.height);
-    // if the current frame, once left aligned to the left and stretched to the full collection view
-    // width intersects the previous frame then they are on the same line
-    BOOL isFirstItemInRow = !CGRectIntersectsRect(previousFrame, strecthedCurrentFrame);
-
-    if (isFirstItemInRow) {
-        // make sure the first item on a line is left aligned
-        [currentItemAttributes leftAlignFrameWithSectionInset:sectionInset];
-        return currentItemAttributes;
+    // Only work with UICollectionViewScrollDirectionVertical
+    if (self.scrollDirection == UICollectionViewScrollDirectionVertical) {
+        CGRect currentFrame = currentItemAttributes.frame;
+        CGRect strecthedCurrentFrame = CGRectMake(sectionInset.left,
+                                                  currentFrame.origin.y,
+                                                  layoutWidth,
+                                                  currentFrame.size.height);
+        // if the current frame, once left aligned to the left and stretched to the full collection view
+        // width intersects the previous frame then they are on the same line
+        BOOL isFirstItemInRow = !CGRectIntersectsRect(previousFrame, strecthedCurrentFrame);
+        if (isFirstItemInRow) {
+            // make sure the first item on a line is left aligned
+            [currentItemAttributes leftAlignFrameWithSectionInset:sectionInset];
+            return currentItemAttributes;
+        }
     }
 
     CGRect frame = currentItemAttributes.frame;
